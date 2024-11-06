@@ -49,23 +49,17 @@ app.use('/', workRouter);
 //doc
 
 if (process.env.NODE_ENV !== 'test') {
-  try {
-    const swaggerFile = await import('./swagger/swagger_output.json', {
-      assert: { type: 'json' },
-    });
-
-    app.get('/', (_, res) => {
-      /*#swagger.ignore = true*/ res.redirect('/doc');
-    });
-
-    app.use(
-      '/doc' /*, authDocProducao*/,
-      swaggerUi.serve,
-      swaggerUi.setup(swaggerFile.default),
-    ); // Acesse o conteúdo padrão do JSON
-  } catch (error) {
-    console.error('Erro ao importar o arquivo Swagger:', error);
-  }
+  const swaggerFile = await import('./swagger/swagger_output.json', {
+    assert: { type: 'json' },
+  });
+  app.get('/', (_, res) => {
+    /*#swagger.ignore = true*/ res.redirect('/doc');
+  });
+  app.use(
+    '/doc' /*, authDocProducao*/,
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerFile.default),
+  ); // Acesse o conteúdo padrão do JSON
 }
 
 
@@ -75,3 +69,22 @@ app.listen(process.env.PORT, () => {
 });
 
 
+// if (process.env.NODE_ENV !== 'test') {
+//   try {
+//     const swaggerFile = await import('./swagger/swagger_output.json', {
+//       assert: { type: 'json' },
+//     });
+
+//     app.get('/', (_, res) => {
+//       /*#swagger.ignore = true*/ res.redirect('/doc');
+//     });
+
+//     app.use(
+//       '/doc' /*, authDocProducao*/,
+//       swaggerUi.serve,
+//       swaggerUi.setup(swaggerFile.default),
+//     ); // Acesse o conteúdo padrão do JSON
+//   } catch (error) {
+//     console.error('Erro ao importar o arquivo Swagger:', error);
+//   }
+// }
