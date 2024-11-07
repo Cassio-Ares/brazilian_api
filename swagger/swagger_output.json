@@ -3,15 +3,25 @@
   "info": {
     "version": "1.0.0",
     "title": "API BRAZILIAN_HANDS",
-    "description": "Documentação da API"
+    "description": "Documentação da API Brazilian Hands"
   },
   "servers": [
     {
-      "url": "http://localhost:3000/",
-      "description": "Servidor localhost."
+      "url": "http://localhost:3000",
+      "description": "Servidor localhost"
     }
   ],
   "paths": {
+    "/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      }
+    },
     "/adm": {
       "get": {
         "tags": [
@@ -1401,6 +1411,23 @@
           }
         }
       }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
     }
-  }
+  },
+  "security": [
+    {
+      "bearerAuth": [],
+      "basicAuth": []
+    }
+  ]
 }

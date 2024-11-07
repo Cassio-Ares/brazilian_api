@@ -51,27 +51,41 @@ app.use('/', workRouter);
 //doc
 
 if (process.env.NODE_ENV !== 'test') {
- const swaggerFile = JSON.parse(
-   await fs.readFile(
-     new URL('./swagger/swagger_output.json', import.meta.url),
-     'utf-8',
-   ),
- );
+  try {
+    const swaggerFile = JSON.parse(
+      await fs.readFile(
+        new URL('./swagger/swagger_output.json', import.meta.url),
+        'utf-8',
+      ),
+    );
 
-  app.get('/', authDocAcess, (_, res) => {
-    /*#swagger.ignore = true*/ res.redirect('/doc');
-  });
-  app.use(
-    '/doc' /*, authDocProducao*/,
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerFile, swaggerOption),
-  ); // Acesse o conteúdo padrão do JSON
+    // Configuração do CSS personalizado para o Swagger UI
+    const swaggerOptions = {
+      customCssUrl: '/swagger-ui.css',
+      explorer: true,
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
+    };
+
+    app.get('/', authDocAcess, (_, res) => {
+      res.redirect('/doc');
+    });
+
+    app.use(
+      '/doc',
+      authDocAcess, // Middleware de autenticação
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerFile, swaggerOptions),
+    );
+  } catch (error) {
+    console.error('Erro ao carregar a documentação Swagger:', error);
+  }
 }
 
-
-app.listen(process.env.PORT, () => {
-  console.log(`Conectado ao banco de dados.`);
-  console.log(`Servidor rodando na porta ${process.env.PORT}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
 
 
