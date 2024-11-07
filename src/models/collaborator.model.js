@@ -65,7 +65,13 @@ const schema = new mongoose.Schema(
     dataProtection: {
       type: String,
       required: 'Aceita os termos de uso?',
-      enum: ['yes', 'no'],
+      enum: ['sim', 'não'],
+    },
+    consentDate: {
+      type: Date,
+      required: function () {
+        return this.dataProtection === 'sim';
+      }
     },
   },
   {

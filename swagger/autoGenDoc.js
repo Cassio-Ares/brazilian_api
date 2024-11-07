@@ -1,10 +1,16 @@
 import mongooseToSwagger from 'mongoose-to-swagger';
 import swaggerAutogen from 'swagger-autogen';
 
-import Adm from '../src/models/adm.model.js';
-import Client from '../src/models/client.model.js';
-import Collaborator from '../src/models/collaborator.model.js';
-import Work from '../src/models/admWork.model.js';
+import SchemaAdm from '../src/models/adm.model.js';
+import SchemaClient from '../src/models/client.model.js';
+import SchemaCollaborator from '../src/models/collaborator.model.js';
+import SchemaWork from '../src/models/admWork.model.js';
+
+
+const swaggerGenerator = swaggerAutogen({
+  openapi: '3.1.0',
+  language: 'pt-BR',
+});
 
 // Define o caminho do arquivo de saída que será gerado com a documentação
 const outputFile = './swagger_output.json';
@@ -38,8 +44,6 @@ let doc = {
     // }
   ],
 
-  language: 'pt-br', // Define o idioma da documentação
-
   // Tipos de conteúdo que a API consome e produz (recomendado para OpenAPI 2.x)
   consumes: ['application/json'],
   produces: ['application/json'],
@@ -47,10 +51,10 @@ let doc = {
   components: {
     schemas: {
       // Converte modelos Mongoose em esquemas Swagger
-      Adm: mongooseToSwagger(Adm),
-      AdmWork: mongooseToSwagger(Work),
-      Client: mongooseToSwagger(Client),
-      Collaborator: mongooseToSwagger(Collaborator),
+      Adm: mongooseToSwagger(SchemaAdm),
+      AdmWork: mongooseToSwagger(SchemaWork),
+      Client: mongooseToSwagger(SchemaClient),
+      Collaborator: mongooseToSwagger(SchemaCollaborator),
     },
   },
 };
@@ -59,7 +63,7 @@ let doc = {
  * Gera a documentação do Swagger chamando o swaggerAutogen.
  * O .then() é usado para garantir que o servidor só inicie após a documentação ser gerada.
  */
-swaggerAutogen(outputFile, endPointFiles, doc)
+swaggerGenerator(outputFile, endPointFiles, doc)
   .then(async () => {
     console.log(
       'Documentação do Swagger gerada encontra-se no arquivo em: ' + outputFile,

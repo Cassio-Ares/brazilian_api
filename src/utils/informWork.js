@@ -2,13 +2,12 @@ import cron from "node-cron";
 import { getWorkByDay } from "../controllers/work.controller.js";
 import { sendEmail } from "./sendEmail.js";
 
-//cron.schedule('0 8 * * *', async () => {
-cron.schedule('17 * * * *', async () => {
+cron.schedule('0 8 * * *', async () => {
   try {
     // Cria um objeto Date para amanhã
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    
+
     // Formata a data para YYYY-MM-DD
     const formattedDate = tomorrow.toISOString().split('T')[0];
 
@@ -35,20 +34,20 @@ cron.schedule('17 * * * *', async () => {
       worksData.forEach(async (work) => {
         const emailContent = `
         <h1>Olá, ${work.collaborator}!</h1>
-      
+
         <p>Amanhã você tem um serviço agendado. Seguem os detalhes para que tudo corra bem:</p>
-      
+
         <p><strong>Nome do Cliente:</strong> ${work.client}</p>
         <p><strong>Data do Serviço:</strong> ${formattedDate}</p>
         <p><strong>Eircode:</strong> ${work.eircode}</p>
         <p><strong>Serviço Solicitado:</strong> ${work.work}</p>
         <p><strong>Particularidades:</strong> ${work.whichPlaces}</p>
         <p><strong>Valor do Serviço:</strong> ${work.price}</p>
-      
+
         <p>Se tiver alguma dúvida ou ocorrer algo inesperado, por favor, entre em contato com o Marcelo pelo telefone <strong>(XX) XXXX-XXXX</strong>.</p>
-      
+
         <p>Estamos aqui para garantir que tudo saia como planejado. Conte com a gente!</p>
-      
+
         <p>Abraço,</p>
         <p><strong>Equipe da Cooperativa</strong></p>
       `;

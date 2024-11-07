@@ -4,6 +4,7 @@ import { connectDB } from './src/configDB/connectDB.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import bearerToken from 'express-bearer-token';
+import fs from 'fs/promises';
 import { authDocAcess } from './src/middleware/authDocAcess.js';
 
 // Importando rotas
@@ -18,6 +19,7 @@ import './src/utils/informWork.js';
 
 //import doc
 import swaggerUi from 'swagger-ui-express';
+const swaggerOption = { customCssUrl: '/swagger-ui.css' };
 
 dotenv.config();
 
@@ -49,16 +51,20 @@ app.use('/', workRouter);
 //doc
 
 if (process.env.NODE_ENV !== 'test') {
-  const swaggerFile = await import('./swagger/swagger_output.json', {
-    assert: { type: 'json' },
-  });
-  app.get('/', (_, res) => {
+ const swaggerFile = JSON.parse(
+   await fs.readFile(
+     new URL('./swagger/swagger_output.json', import.meta.url),
+     'utf-8',
+   ),
+ );
+
+  app.get('/', authDocAcess, (_, res) => {
     /*#swagger.ignore = true*/ res.redirect('/doc');
   });
   app.use(
     '/doc' /*, authDocProducao*/,
     swaggerUi.serve,
-    swaggerUi.setup(swaggerFile.default),
+    swaggerUi.setup(swaggerFile, swaggerOption),
   ); // Acesse o conteúdo padrão do JSON
 }
 
@@ -87,4 +93,20 @@ app.listen(process.env.PORT, () => {
 //   } catch (error) {
 //     console.error('Erro ao importar o arquivo Swagger:', error);
 //   }
+// }
+
+
+
+// if (process.env.NODE_ENV !== 'test') {
+//   const swaggerFile = await import('./swagger/swagger_output.json', {
+//     assert: { type: 'json' },
+//   });
+//   app.get('/', (_, res) => {
+//     /*#swagger.ignore = true*/ res.redirect('/doc');
+//   });
+//   app.use(
+//     '/doc' /*, authDocProducao*/,
+//     swaggerUi.serve,
+//     swaggerUi.setup(swaggerFile.default),
+//   ); // Acesse o conteúdo padrão do JSON
 // }
