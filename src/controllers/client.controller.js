@@ -62,23 +62,22 @@ export const createClient = async (req, res) => {
 
     const client = await Client.create(data);
 
-    const emailContent = `
-     <h1> Novo Cliente Cadastrado! </h1>
+    const address = `${client.address.street}, ${client.address.houseNumber}, ${client.address.district}, ${client.address.city}`;
 
-      <p><strong>Nome:</strong> ${client.name}</p>
-     <p><strong>Telefone:</strong> ${client.phone}</p>
-     <p><strong> Eircode:</strong> ${client.eircode}</p>
-     <p><strong> Tipo de Serviço:</strong> ${client.typeOfWork}</p>
-     <p><strong> Data do Serviço:</strong> ${client.dateOfService}</p>
-     <p><strong> Como encontrou a empresa:</strong> ${client.howFindCompany}
-     <p><strong> Nome do Indicador: </strong>${
-       client.indicatorName || 'Não informado'
-     }</p>
-     <p><strong>  Particularidades:</strong> ${
-       client.particularities || 'Nenhuma'
-     }</p>
-     <P><strong>Termos de uso:</strong> ${client.dataProtection}</p>
-    `;
+    const emailContent = `
+    <h1>Novo Cliente Cadastrado!</h1>
+    <p><strong>Nome:</strong> ${client.name}</p>
+    <p><strong>Email:</strong> ${client.email}</p>
+    <p><strong>Telefone:</strong> ${client.phone}</p>
+    <p><strong>Endereço:</strong> ${address}</p>
+    <p><strong>Eircode:</strong> ${client.eircode}</p>
+    <p><strong>Tipo de Serviço:</strong> ${client.typeOfWork}</p>
+    <p><strong>Data do Serviço:</strong> ${client.dateOfService}</p>
+    <p><strong>Como encontrou a empresa:</strong> ${client.howFindCompany}</p>
+    <p><strong>Nome do Indicador:</strong> ${client.indicatorName || 'Não informado'}</p>
+    <p><strong>Particularidades:</strong> ${client.particularities || 'Nenhuma'}</p>
+    <p><strong>Termos de uso:</strong> ${client.dataProtection}</p>
+`;
 
     const subject = 'Novo Cliente Cadastrado!';
 

@@ -5,7 +5,7 @@ const schema = new mongoose.Schema(
     name: {
       type: String,
       trim: true,
-      required: 'Nome é essencial para o cadastro.',
+      required: 'Name is essential for registration',
     },
     email: {
       type: String,
@@ -14,8 +14,8 @@ const schema = new mongoose.Schema(
       unique: true,
       required: 'E-mail é essencial para cadastro',
       match: [
-        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-        'Por favor, forneça um endereço de email válido',
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        'Please enter a valid email address.',
       ],
     },
     phone: {
@@ -23,6 +23,22 @@ const schema = new mongoose.Schema(
       trim: true,
       required: 'Whats é essencial para cadastro.',
       math: [/^\+?\d{10,15}$/, 'Número de telefone inválido.'],
+    },
+    address: {
+      city: {
+        type: String,
+        required: false,
+      },
+      street: {
+        type: String,
+        required: false,
+      },
+      district: {
+        type: String,
+      },
+      houseNumber: {
+        type: String,
+      },
     },
     eircode: {
       type: String,
@@ -71,7 +87,7 @@ const schema = new mongoose.Schema(
       type: Date,
       required: function () {
         return this.dataProtection === 'sim';
-      }
+      },
     },
   },
   {

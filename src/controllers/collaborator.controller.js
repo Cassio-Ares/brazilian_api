@@ -73,12 +73,15 @@ export const createCollaborator = async (req, res) => {
 
     const collaborator = await Collaborator.create(data);
 
+    const address = `${collaborator.address.street}, ${collaborator.address.houseNumber}, ${collaborator.address.district}, ${collaborator.address.city}`;
+
     const emailContent = `
       <h1>Novo Colaborador Cadastrado!</h1>
 
       <p><strong>Nome:</strong> ${collaborator.name}</p>
       <p><strong>E-mail:</strong> ${collaborator.email}</p>
       <p><strong>Telefone:</strong> ${collaborator.phone}</p>
+      <p><strong>Endereço:</strong> ${address}</p>
       <p><strong>Eircode:</strong> ${collaborator.eircode || 'Não informado'}</p>
       <p><strong>Serviço que pode prestar:</strong> ${collaborator.work}</p>
       <p><strong>Possui equipamentos:</strong> ${collaborator.equipment ? 'Sim' : 'Não'}</p>
@@ -86,7 +89,6 @@ export const createCollaborator = async (req, res) => {
       <p><strong>Forma de deslocamento:</strong> ${collaborator.shapeOfDisplacement}</p>
       <P><strong>Termos de uso:</strong> ${collaborator.dataProtection}</p>
     `;
-
 
     const subject = 'Novo Colaborador Cadastrado!';
 
