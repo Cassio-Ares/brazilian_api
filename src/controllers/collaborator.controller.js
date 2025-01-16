@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Collaborator from '../models/collaborator.model.js';
-import { validationError } from '../validatorError/validationError.js';
 import { sendEmail } from '../utils/sendEmail.js';
+import { validationError } from '../validatorError/validationError.js';
 
 export const getAllCollaborator = async (_, res) => {
   //#swagger.tags=['Collaborator']
@@ -70,6 +70,24 @@ export const createCollaborator = async (req, res) => {
   //#swagger.tags=['Collaborator']
   try {
     const data = req.body;
+
+    //Verificar recaptcha
+    const recaptchaRes = await fetch(
+      'https://www.google.com/recaptcha/api/siteverify',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${data.captchaToken}`,
+      },
+    );
+
+    const recaptchaData = await recaptchaRes.json();
+
+    if (!recaptchaData.success) {
+      return res.status(400).json({ message: 'Verificação do CAPTCHA falhou' });
+    }
 
     const collaborator = await Collaborator.create(data);
 
