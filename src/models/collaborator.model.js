@@ -22,24 +22,24 @@ const schema = new mongoose.Schema(
       type: String,
       trim: true,
       required: 'Whats é essencial para cadastro.',
-      math: [/^\+?\d{10,15}$/, 'Número de telefone inválido.'],
+      //math: [/^\+?\d{10,15}$/, 'Número de telefone inválido.'],
     },
-    address: {
-      city: {
-        type: String,
-        required: false,
-      },
-      street: {
-        type: String,
-        required: false,
-      },
-      district: {
-        type: String,
-      },
-      houseNumber: {
-        type: String,
-      },
-    },
+    // address: {
+    //   city: {
+    //     type: String,
+    //     required: false,
+    //   },
+    //   street: {
+    //     type: String,
+    //     required: false,
+    //   },
+    //   district: {
+    //     type: String,
+    //   },
+    //   houseNumber: {
+    //     type: String,
+    //   },
+    // },
     eircode: {
       type: String,
       minlength: [7, 'Se não foi colocado espaço o mínimo são 7 caracteres.'],
@@ -52,6 +52,7 @@ const schema = new mongoose.Schema(
         'serviço de limpeza',
         'paisagismo e jardinagem',
         'pintura',
+        'reformas',
         'manicure e pedicure',
         'costura',
       ],
@@ -79,14 +80,14 @@ const schema = new mongoose.Schema(
       ],
     },
     dataProtection: {
-      type: String,
-      required: 'Aceita os termos de uso?',
-      enum: ['sim', 'não'],
+      type: Boolean,
+      default: false,
+      required: 'Do you accept the terms of use? (GDPR)',
     },
     consentDate: {
       type: Date,
       required: function () {
-        return this.dataProtection === 'sim';
+        return this.dataProtection === true;
       },
     },
   },

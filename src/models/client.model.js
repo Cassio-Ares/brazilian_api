@@ -21,24 +21,24 @@ const schema = new mongoose.Schema(
       type: String,
       trim: true,
       required: 'Phone number is essential for registration.',
-      match: [/^\+?\d{10,15}$/, 'Invalid phone number.'],
+      //match: [/^\+?\d{10,15}$/, 'Invalid phone number.'],
     },
-    address: {
-      city: {
-        type: String,
-        required: false,
-      },
-      street: {
-        type: String,
-        required: false,
-      },
-      district: {
-        type: String,
-      },
-      houseNumber: {
-        type: String,
-      },
-    },
+    // address: {
+    //   city: {
+    //     type: String,
+    //     required: false,
+    //   },
+    //   street: {
+    //     type: String,
+    //     required: false,
+    //   },
+    //   district: {
+    //     type: String,
+    //   },
+    //   houseNumber: {
+    //     type: String,
+    //   },
+    // },
     eircode: {
       type: String,
       minlength: [7, 'If no space was placed, the minimum is 7 characters.'],
@@ -51,20 +51,21 @@ const schema = new mongoose.Schema(
         'serviço de limpeza',
         'paisagismo e jardinagem',
         'pintura',
+        'reformas',
         'manicure e pedicure',
         'costura',
       ],
     },
-    dateOfService: {
-      type: Date,
-      required: 'Please specify the desired service date.',
-      validate: {
-        validator: function (date) {
-          return date >= Date.now();
-        },
-      },
-      message: 'The date must be in the future.',
-    },
+    // dateOfService: {
+    //   type: Date,
+    //   required: 'Please specify the desired service date.',
+    //   validate: {
+    //     validator: function (date) {
+    //       return date >= Date.now();
+    //     },
+    //   },
+    //   message: 'The date must be in the future.',
+    // },
     howFindCompany: {
       type: String,
       required: 'Please inform how you found our company',
@@ -78,14 +79,14 @@ const schema = new mongoose.Schema(
       //ex: serviço silencioso, ....
     },
     dataProtection: {
-      type: String,
+      type: Boolean,
+      default: false,
       required: 'Do you accept the terms of use? (GDPR)',
-      enum: ['sim', 'não'],
     },
     consentDate: {
       type: Date,
       required: function () {
-        return this.dataProtection === 'sim';
+        return this.dataProtection === true;
       },
     },
   },

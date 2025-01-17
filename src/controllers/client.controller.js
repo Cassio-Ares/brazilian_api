@@ -60,6 +60,12 @@ export const createClient = async (req, res) => {
   try {
     const data = req.body;
 
+    let consentDate;
+
+    if (data.dataProtection === true) {
+      consentDate = new Date();
+    }
+
     //Verificar recaptcha
     const recaptchaRes = await fetch(
       'https://www.google.com/recaptcha/api/siteverify',
@@ -78,7 +84,14 @@ export const createClient = async (req, res) => {
       return res.status(400).json({ message: 'Verificação do CAPTCHA falhou' });
     }
 
-    const client = await Client.create(data);
+    const newData = {
+      ...data,
+      consentDate,
+    };
+    console.log(newData);
+
+    const client = await Client.create(newData);
+    console.log(client);
 
     const address = `${client.address.street}, ${client.address.houseNumber}, ${client.address.district}, ${client.address.city}`;
 
@@ -103,6 +116,7 @@ export const createClient = async (req, res) => {
 
     return res.status(200).json(client);
   } catch (error) {
+    console.log(error);
     validationError(res, error);
   }
 };

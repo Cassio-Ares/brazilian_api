@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import Collaborator from '../models/collaborator.model.js';
-import { sendEmail } from '../utils/sendEmail.js';
 import { validationError } from '../validatorError/validationError.js';
 
 export const getAllCollaborator = async (_, res) => {
@@ -71,6 +70,12 @@ export const createCollaborator = async (req, res) => {
   try {
     const data = req.body;
 
+    let consentDate;
+
+    if (data.dataProtection === true) {
+      consentDate = new Date();
+    }
+
     //Verificar recaptcha
     const recaptchaRes = await fetch(
       'https://www.google.com/recaptcha/api/siteverify',
@@ -89,7 +94,16 @@ export const createCollaborator = async (req, res) => {
       return res.status(400).json({ message: 'Verificação do CAPTCHA falhou' });
     }
 
-    const collaborator = await Collaborator.create(data);
+    const newData = {
+      ...data,
+      consentDate,
+    };
+
+    console.log('create collaborator', newData);
+
+    const collaborator = await Collaborator.create(newData);
+
+    console.log('collaborator create', collaborator);
 
     const address = `${collaborator.address.street}, ${collaborator.address.houseNumber}, ${collaborator.address.district}, ${collaborator.address.city}`;
 
@@ -114,6 +128,7 @@ export const createCollaborator = async (req, res) => {
 
     return res.status(200).json(collaborator);
   } catch (error) {
+    console.error(error);
     validationError(res, error);
   }
 };
