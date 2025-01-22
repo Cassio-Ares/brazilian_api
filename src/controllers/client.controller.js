@@ -88,19 +88,18 @@ export const createClient = async (req, res) => {
       ...data,
       consentDate,
     };
-    console.log(newData);
 
     const client = await Client.create(newData);
     console.log(client);
 
-    const address = `${client.address.street}, ${client.address.houseNumber}, ${client.address.district}, ${client.address.city}`;
+    //todo api de conversao de eircode em address
+    // const address = `${client.address.street}, ${client.address.houseNumber}, ${client.address.district}, ${client.address.city}`;
 
     const emailContent = `
     <h1>Novo Cliente Cadastrado!</h1>
     <p><strong>Nome:</strong> ${client.name}</p>
     <p><strong>Email:</strong> ${client.email}</p>
     <p><strong>Telefone:</strong> ${client.phone}</p>
-    <p><strong>Endereço:</strong> ${address}</p>
     <p><strong>Eircode:</strong> ${client.eircode}</p>
     <p><strong>Tipo de Serviço:</strong> ${client.typeOfWork}</p>
     <p><strong>Data do Serviço:</strong> ${client.dateOfService}</p>
@@ -114,7 +113,13 @@ export const createClient = async (req, res) => {
 
     await sendEmail(process.env.EMAIL_ADM, subject, emailContent);
 
-    return res.status(200).json(client);
+    if (!client) {
+      return res.status(400).json({ message: 'Erro ao cadastrar cliente' });
+    }
+
+    return res.status(200).json({
+      message: 'Cliente cadastrado com sucesso',
+    });
   } catch (error) {
     console.log(error);
     validationError(res, error);

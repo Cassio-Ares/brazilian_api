@@ -11,7 +11,6 @@ const schema = new mongoose.Schema(
       type: String,
       trim: true,
       lowercase: true,
-      unique: true,
       required: 'E-mail é essencial para cadastro',
       match: [
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -74,7 +73,7 @@ const schema = new mongoose.Schema(
       enum: [
         'carro',
         'moto',
-        'transporte público',
+        'transporte publico',
         'caminhando',
         'carro de aplicativo',
       ],
@@ -93,6 +92,7 @@ const schema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    autoIndex: false,
   },
 );
 

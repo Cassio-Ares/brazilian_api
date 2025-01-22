@@ -1017,7 +1017,6 @@
               "email",
               "phone",
               "typeOfWork",
-              "howFindCompany",
               "dataProtection",
               "consentDate"
             ],
@@ -1097,6 +1096,7 @@
                   "enum": {
                     "type": "array",
                     "example": [
+                      "",
                       "facebook",
                       "instagram",
                       "google",
@@ -1302,7 +1302,7 @@
                     "example": [
                       "carro",
                       "moto",
-                      "transporte público",
+                      "transporte publico",
                       "caminhando",
                       "carro de aplicativo"
                     ],

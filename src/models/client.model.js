@@ -68,8 +68,8 @@ const schema = new mongoose.Schema(
     // },
     howFindCompany: {
       type: String,
-      required: 'Please inform how you found our company',
-      enum: ['facebook', 'instagram', 'google', 'indicação'],
+      // required: 'Please inform how you found our company',
+      enum: ['', 'facebook', 'instagram', 'google', 'indicação'],
     },
     indicatorName: {
       type: String,
@@ -98,3 +98,4 @@ const schema = new mongoose.Schema(
 const SchemaClient = mongoose.models.Client || mongoose.model('Client', schema);
 
 export default SchemaClient;
+//TODO fix street
