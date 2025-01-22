@@ -8,6 +8,7 @@ import {
   getClientByName,
   updateClient,
 } from '../controllers/client.controller.js';
+import { acessAuth } from '../middleware/acessAuth.js';
 
 export const routerClient = Router();
 

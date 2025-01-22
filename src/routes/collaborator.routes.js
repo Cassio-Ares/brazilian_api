@@ -8,6 +8,7 @@ import {
   removeCollaborator,
   updateCollaborator,
 } from '../controllers/collaborator.controller.js';
+import { acessAuth } from '../middleware/acessAuth.js';
 
 export const routerCollaborator = Router();
 
