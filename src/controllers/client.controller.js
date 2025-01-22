@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Client from '../models/client.model.js';
-import { validationError } from '../validatorError/validationError.js';
 import { sendEmail } from '../utils/sendEmail.js';
+import { validationError } from '../validatorError/validationError.js';
 
 export const getAllClient = async (_, res) => {
   //#swagger.tags=['Client']
@@ -60,32 +60,68 @@ export const createClient = async (req, res) => {
   try {
     const data = req.body;
 
-    const client = await Client.create(data);
+    let consentDate;
+
+    if (data.dataProtection === true) {
+      consentDate = new Date();
+    }
+
+    //Verificar recaptcha
+    const recaptchaRes = await fetch(
+      'https://www.google.com/recaptcha/api/siteverify',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${data.captchaToken}`,
+      },
+    );
+
+    const recaptchaData = await recaptchaRes.json();
+
+    if (!recaptchaData.success) {
+      return res.status(400).json({ message: 'Verificação do CAPTCHA falhou' });
+    }
+
+    const newData = {
+      ...data,
+      consentDate,
+    };
+
+    const client = await Client.create(newData);
+    console.log(client);
+
+    //todo api de conversao de eircode em address
+    // const address = `${client.address.street}, ${client.address.houseNumber}, ${client.address.district}, ${client.address.city}`;
 
     const emailContent = `
-     <h1> Novo Cliente Cadastrado! </h1>
-
-      <p><strong>Nome:</strong> ${client.name}</p>
-     <p><strong>Telefone:</strong> ${client.phone}</p>
-     <p><strong> Eircode:</strong> ${client.eircode}</p>
-     <p><strong> Tipo de Serviço:</strong> ${client.typeOfWork}</p>
-     <p><strong> Data do Serviço:</strong> ${client.dateOfService}</p>
-     <p><strong> Como encontrou a empresa:</strong> ${client.howFindCompany}
-     <p><strong> Nome do Indicador: </strong>${
-       client.indicatorName || 'Não informado'
-     }</p>
-     <p><strong>  Particularidades:</strong> ${
-       client.particularities || 'Nenhuma'
-     }</p>
-     <P><strong>Termos de uso:</strong> ${client.dataProtection}</p>
-    `;
+    <h1>Novo Cliente Cadastrado!</h1>
+    <p><strong>Nome:</strong> ${client.name}</p>
+    <p><strong>Email:</strong> ${client.email}</p>
+    <p><strong>Telefone:</strong> ${client.phone}</p>
+    <p><strong>Eircode:</strong> ${client.eircode}</p>
+    <p><strong>Tipo de Serviço:</strong> ${client.typeOfWork}</p>
+    <p><strong>Data do Serviço:</strong> ${client.dateOfService}</p>
+    <p><strong>Como encontrou a empresa:</strong> ${client.howFindCompany}</p>
+    <p><strong>Nome do Indicador:</strong> ${client.indicatorName || 'Não informado'}</p>
+    <p><strong>Particularidades:</strong> ${client.particularities || 'Nenhuma'}</p>
+    <p><strong>Termos de uso:</strong> ${client.dataProtection}</p>
+`;
 
     const subject = 'Novo Cliente Cadastrado!';
 
     await sendEmail(process.env.EMAIL_ADM, subject, emailContent);
 
-    return res.status(200).json(client);
+    if (!client) {
+      return res.status(400).json({ message: 'Erro ao cadastrar cliente' });
+    }
+
+    return res.status(200).json({
+      message: 'Cliente cadastrado com sucesso',
+    });
   } catch (error) {
+    console.log(error);
     validationError(res, error);
   }
 };

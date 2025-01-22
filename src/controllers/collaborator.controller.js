@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import Collaborator from '../models/collaborator.model.js';
 import { validationError } from '../validatorError/validationError.js';
-import { sendEmail } from '../utils/sendEmail.js';
 
 export const getAllCollaborator = async (_, res) => {
   //#swagger.tags=['Collaborator']
@@ -71,7 +70,43 @@ export const createCollaborator = async (req, res) => {
   try {
     const data = req.body;
 
-    const collaborator = await Collaborator.create(data);
+    let consentDate;
+
+    if (data.dataProtection === true) {
+      consentDate = new Date();
+    }
+
+    //Verificar recaptcha
+    const recaptchaRes = await fetch(
+      'https://www.google.com/recaptcha/api/siteverify',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${data.captchaToken}`,
+      },
+    );
+
+    const recaptchaData = await recaptchaRes.json();
+
+    if (!recaptchaData.success) {
+      return res.status(400).json({ message: 'Verificação do CAPTCHA falhou' });
+    }
+
+    const newData = {
+      ...data,
+      consentDate,
+    };
+
+    console.log('create collaborator', newData);
+
+    const collaborator = await Collaborator.create(newData);
+
+    console.log('collaborator create', collaborator);
+
+    //todo api de conversao de eircode em address
+    //const address = `${collaborator.address.street}, ${collaborator.address.houseNumber}, ${collaborator.address.district}, ${collaborator.address.city}`;
 
     const emailContent = `
       <h1>Novo Colaborador Cadastrado!</h1>
@@ -79,6 +114,7 @@ export const createCollaborator = async (req, res) => {
       <p><strong>Nome:</strong> ${collaborator.name}</p>
       <p><strong>E-mail:</strong> ${collaborator.email}</p>
       <p><strong>Telefone:</strong> ${collaborator.phone}</p>
+
       <p><strong>Eircode:</strong> ${collaborator.eircode || 'Não informado'}</p>
       <p><strong>Serviço que pode prestar:</strong> ${collaborator.work}</p>
       <p><strong>Possui equipamentos:</strong> ${collaborator.equipment ? 'Sim' : 'Não'}</p>
@@ -87,13 +123,19 @@ export const createCollaborator = async (req, res) => {
       <P><strong>Termos de uso:</strong> ${collaborator.dataProtection}</p>
     `;
 
-
     const subject = 'Novo Colaborador Cadastrado!';
 
     await sendEmail(process.env.EMAIL_ADM, subject, emailContent);
 
-    return res.status(200).json(collaborator);
+    if (!collaborator) {
+      return res.status(400).json({ message: 'Colaborador nao cadastrado' });
+    }
+
+    return res
+      .status(200)
+      .json({ message: 'Colaborador cadastrado com sucesso!' });
   } catch (error) {
+    console.error(error);
     validationError(res, error);
   }
 };

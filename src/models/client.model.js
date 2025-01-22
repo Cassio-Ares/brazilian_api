@@ -1,55 +1,75 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const schema = new mongoose.Schema(
   {
     name: {
       type: String,
       trim: true,
-      required: 'Nome é essencial para o cadastro',
+      required: 'Name is essential for registration',
     },
     email: {
       type: String,
       trim: true,
       lowercase: true,
       required: true,
-      match: [/.+\@.+\..+/, 'Por favor, insira um e-mail válido.'],
+      match: [
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        'Please enter a valid email address.',
+      ],
     },
     phone: {
       type: String,
       trim: true,
-      required: 'Whats é essencial para cadastro.',
-      match: [/^\+?\d{10,15}$/, 'Número de telefone inválido.'],
+      required: 'Phone number is essential for registration.',
+      //match: [/^\+?\d{10,15}$/, 'Invalid phone number.'],
     },
+    // address: {
+    //   city: {
+    //     type: String,
+    //     required: false,
+    //   },
+    //   street: {
+    //     type: String,
+    //     required: false,
+    //   },
+    //   district: {
+    //     type: String,
+    //   },
+    //   houseNumber: {
+    //     type: String,
+    //   },
+    // },
     eircode: {
       type: String,
-      minlength: [7, 'Se não foi colocado espaço o mínimo são 7 caracteres.'],
-      maxlength: [8, 'Se foi colocado espaço o máximo são 8 caracteres.'],
+      minlength: [7, 'If no space was placed, the minimum is 7 characters.'],
+      maxlength: [8, 'If space was placed, the maximum is 8 characters.'],
     },
     typeOfWork: {
       type: String,
-      required: 'Tipo de exercicio é essencial',
+      required: 'Tipo de serviço é essencial',
       enum: [
         'serviço de limpeza',
         'paisagismo e jardinagem',
         'pintura',
+        'reformas',
         'manicure e pedicure',
         'costura',
       ],
     },
-    dateOfService: {
-      type: Date,
-      required: 'Coloque a data que deseja o serviço.',
-      validate: {
-        validator: function (date) {
-          return date >= Date.now();
-        },
-      },
-      message: 'A data deve ser no futuro.',
-    },
+    // dateOfService: {
+    //   type: Date,
+    //   required: 'Please specify the desired service date.',
+    //   validate: {
+    //     validator: function (date) {
+    //       return date >= Date.now();
+    //     },
+    //   },
+    //   message: 'The date must be in the future.',
+    // },
     howFindCompany: {
       type: String,
-      required: 'Informe por favor como conheceu nossa empresa',
-      enum: ['facebook', 'instagram', 'google', 'indicação'],
+      // required: 'Please inform how you found our company',
+      enum: ['', 'facebook', 'instagram', 'google', 'indicação'],
     },
     indicatorName: {
       type: String,
@@ -59,22 +79,23 @@ const schema = new mongoose.Schema(
       //ex: serviço silencioso, ....
     },
     dataProtection: {
-      type: String,
-      required: 'Aceita os termos de uso? (RGPD)',
-      enum: ['sim', 'não'],
+      type: Boolean,
+      default: false,
+      required: 'Do you accept the terms of use? (GDPR)',
     },
     consentDate: {
       type: Date,
       required: function () {
-        return this.dataProtection === 'sim';
-      }
-    }
+        return this.dataProtection === true;
+      },
+    },
   },
   {
     timestamps: true,
   },
 );
 
-const SchemaClient = mongoose.models.Client || mongoose.model("Client", schema);
+const SchemaClient = mongoose.models.Client || mongoose.model('Client', schema);
 
 export default SchemaClient;
+//TODO fix street

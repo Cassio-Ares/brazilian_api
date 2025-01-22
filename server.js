@@ -5,13 +5,13 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import bearerToken from 'express-bearer-token';
 import fs from 'fs/promises';
-import { authDocAcess } from './src/middleware/authDocAcess.js';
+//import { authDocAcess } from './src/middleware/authDocAcess.js';
 
 // Importando rotas
-import { routerCollaborator } from './src/routes/collaborator.routes.js';
 import { routerAdm } from './src/routes/adm.routes.js';
-import { routerClient } from './src/routes/client.routes.js';
 import { routerLogin } from './src/routes/authLogin.routes.js';
+import { routerClient } from './src/routes/client.routes.js';
+import { routerCollaborator } from './src/routes/collaborator.routes.js';
 import { workRouter } from './src/routes/works.routes.js';
 
 //automação de e-mail
@@ -68,9 +68,9 @@ if (process.env.NODE_ENV !== 'test') {
       },
     };
 
-    app.get('/', authDocAcess, (_, res) => {
-      res.redirect('/doc');
-    });
+    // app.get('/', authDocAcess, (_, res) => {
+    //   res.redirect('/doc');
+    // });
 
     app.use(
       '/doc',
@@ -87,7 +87,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
-
 
 // if (process.env.NODE_ENV !== 'test') {
 //   try {
@@ -108,8 +107,6 @@ app.listen(PORT, () => {
 //     console.error('Erro ao importar o arquivo Swagger:', error);
 //   }
 // }
-
-
 
 // if (process.env.NODE_ENV !== 'test') {
 //   const swaggerFile = await import('./swagger/swagger_output.json', {
