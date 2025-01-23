@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import Collaborator from '../models/collaborator.model.js';
+import { sendEmail } from '../utils/sendEmail.js';
+import { collaboratorValidationSchema } from '../validationSchema/collaborator.validation.js';
 import { validationError } from '../validatorError/validationError.js';
 
 export const getAllCollaborator = async (_, res) => {
@@ -68,7 +70,7 @@ export const getCollaboratorId = async (req, res) => {
 export const createCollaborator = async (req, res) => {
   //#swagger.tags=['Collaborator']
   try {
-    const data = req.body;
+    const data = collaboratorValidationSchema.parse(req.body);
 
     let consentDate;
 

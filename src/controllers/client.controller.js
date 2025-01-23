@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Client from '../models/client.model.js';
 import { sendEmail } from '../utils/sendEmail.js';
+import { clientValidationSchema } from '../validationSchema/client.validation.js';
 import { validationError } from '../validatorError/validationError.js';
 
 export const getAllClient = async (_, res) => {
@@ -58,7 +59,7 @@ export const getClientByName = async (req, res) => {
 export const createClient = async (req, res) => {
   //#swagger.tags=['Client']
   try {
-    const data = req.body;
+    const data = clientValidationSchema.parse(req.body);
 
     let consentDate;
 
