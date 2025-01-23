@@ -176,20 +176,6 @@
           "500": {
             "description": "Erro Interno do Servidor"
           }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "req": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
         }
       }
     },
@@ -342,20 +328,6 @@
           },
           "500": {
             "description": "Erro Interno do Servidor"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "req": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
           }
         }
       }

@@ -30,7 +30,8 @@
     "nodemailer": "^6.9.15",
     "prettier": "^3.3.3",
     "swagger-autogen": "^2.23.7",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "install": "^0.13.0",
