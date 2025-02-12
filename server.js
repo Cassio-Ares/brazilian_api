@@ -121,3 +121,5 @@ app.listen(PORT, () => {
 //     swaggerUi.setup(swaggerFile.default),
 //   ); // Acesse o conteúdo padrão do JSON
 // }
+
+//ajustar erros
